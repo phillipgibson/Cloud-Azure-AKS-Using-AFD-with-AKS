@@ -10,7 +10,7 @@ So if you take a look at the current documentation concerning [AKS BC/DR strateg
 
 Depending on your application needs, there is a variety of ways and possibilities of exposing your web applications. You can explore these options in more detail with this article on [Building with Azure's application delivery suite](https://docs.microsoft.com/en-us/azure/frontdoor/front-door-lb-with-azure-app-delivery-suite#building-with-azures-application-delivery-suite). For the purposes of this walkthrough, we will be using AFD to load balance the global DNS-based traffic and http traffic between two Azure regions with identical AKS services deployed. I did personalize each AKS service so that the web page of each application identifies the Azure region the application is hosted in. This will allow us to see the live region servicing the application when we take the service offline in each region's AKS cluster. AFD will provide global high availablity by building a backend pool containing both public IPs of the AKS services in each region. 
 
-![alt text](https://github.com/phillipgibson/Cloud/blob/master/Azure/AKS/using-afd-with-aks/images/aks-azure-front-door.png)
+![alt text](https://github.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/tree/master/images/aks-azure-front-door.png)
 
 As you can tell, using AFD has already streamlined the architecture. Typical patterns would have a deployment of an Application Gateway in each region downstream from the global DNS traffic service. Remember that Azure Application Gateway is a regional service, so you would have to deploy it N number of times per region hosting your application. With using AFD I have eliminated the use of Azure Traffic Manager for global DNS-based traffic, and I'm able to push the functionality provied by Azure Application Gateway upstream to AFD providing me WAF, layer 7 path/url routing, and session state configuration. 
 
@@ -182,9 +182,9 @@ Verify the deployed app has received a public IP and then browse to that endpoin
 ```
 kubectl get svc
 ```
-![alt text](https://github.com/phillipgibson/Cloud/blob/master/Azure/AKS/using-afd-with-aks/images/aks-afd-verify-eastus2-app-kubectl.png)
+![alt text](https://github.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/tree/master/images/aks-afd-verify-eastus2-app-kubectl.png)
 
-![alt text](https://github.com/phillipgibson/Cloud/blob/master/Azure/AKS/using-afd-with-aks/images/aks-afd-verify-eastus2-app-browser.png)
+![alt text](https://github.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/tree/master/images/aks-afd-verify-eastus2-app-browser.png)
 
 Repeat the same deployment for the West US 2 AKS cluster and verify you can browse to the endpoint.
 ```
@@ -192,9 +192,9 @@ kubectl config use-context demo-afd-aks-westus2-cluster
 kubectl create -f https://raw.githubusercontent.com/phillipgibson/Cloud/master/Azure/AKS/using-afd-with-aks/phillipgibson-azure-frontdoor-westus2-elb-app.yaml
 kubectl get svc
 ```
-![alt text](https://github.com/phillipgibson/Cloud/blob/master/Azure/AKS/using-afd-with-aks/images/aks-afd-verify-westus2-app-kubectl.png)
+![alt text](https://github.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/tree/master/images/aks-afd-verify-westus2-app-kubectl.png)
 
-![alt text](https://github.com/phillipgibson/Cloud/blob/master/Azure/AKS/using-afd-with-aks/images/aks-afd-verify-westus2-app-browser.png)
+![alt text](https://github.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/tree/master/images/aks-afd-verify-westus2-app-browser.png)
 
 Make note of both the external public IP address of both your AKS services endpoints in each Azure region. We will use them to configure the backend configuration of the AFD service.
 
@@ -248,19 +248,19 @@ The AFD FAQ already has this process documented and on the roadmap for NSGs will
 
 Locate the NSG of the AKS service. This will be found in the MC_* resource group for the AKS cluster. You will know you're working on the correct NSG rule becasue the destination IP address should match the external IP address of the AKS service.
 
-![alt text](https://github.com/phillipgibson/Cloud/blob/master/Azure/AKS/using-afd-with-aks/images/aks-svc-identify-nsg.png)
+![alt text](https://github.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/tree/master/images/aks-svc-identify-nsg.png)
 
 In the properties of the NSG rule you will notice that it is using the Service Tag Internet as the accepting source. This configuration is what allows traffic from anyone on the internet to the AKS service and will need to be changed to only accept traffic from the AFD service.
 
-![alt text](https://github.com/phillipgibson/Cloud/blob/master/Azure/AKS/using-afd-with-aks/images/aks-svc-default-nsg-config.png)
+![alt text](https://github.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/tree/master/images/aks-svc-default-nsg-config.png)
 
 Change the Source option to IP Addresses and in the Source IP addresses/CIDR ranges property enter the AFD service CIDR range of 147.243.0.0/16 and save the configuration.
 
-![alt text](https://github.com/phillipgibson/Cloud/blob/master/Azure/AKS/using-afd-with-aks/images/aks-svc-afd-nsg-config.png)
+![alt text](https://github.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/tree/master/images/aks-svc-afd-nsg-config.png)
 
 You should now see the updated configuration of the NSG in the inbound security rules.
 
-![alt text](https://github.com/phillipgibson/Cloud/blob/master/Azure/AKS/using-afd-with-aks/images/aks-svc-afd-nsg-config-complete.png)
+![alt text](https://github.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/tree/master/images/aks-svc-afd-nsg-config-complete.png)
 
 You will need to repeat those steps for every AKS cluster service you have configured in the AFD backend pool, and you should now not be able to go directly to the AKS service endpoint and only be able to view the AKS services endpoints through the AFD service. 
 
@@ -271,7 +271,7 @@ In the previous pattern, we created two AKS services in the East US 2 and West U
 
 > **NOTE:** Please be aware that the Azure Firewall comes with an additional cost
 
-![alt text](https://github.com/phillipgibson/Cloud/blob/master/Azure/AKS/using-afd-with-aks/images/afd-aks-azfirewall-arch.png)
+![alt text](https://github.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/tree/master/images/afd-aks-azfirewall-arch.png)
 
 If you're continuing from the previous deployment, let's go ahead and remove both region's AKS services and the AFD backend pool.
 
@@ -311,7 +311,7 @@ Verify the deployed app has received a **internal** IP.
 kubectl get svc
 ```
 
-![alt text](https://github.com/phillipgibson/Cloud/blob/master/Azure/AKS/using-afd-with-aks/images/aks-afd-verify-eastus2-app-internal-kubectl.png)
+![alt text](https://github.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/tree/master/images/aks-afd-verify-eastus2-app-internal-kubectl.png)
 
 Repeat the same deployment for the West US 2 AKS cluster and verify you have a **internal** IP as the endpoint.
 ```
@@ -320,7 +320,7 @@ kubectl create -f https://raw.githubusercontent.com/phillipgibson/Cloud/master/A
 kubectl get svc
 ```
 
-![alt text](https://github.com/phillipgibson/Cloud/blob/master/Azure/AKS/using-afd-with-aks/images/aks-afd-verify-westus2-app-internal-kubectl.png)
+![alt text](https://github.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/tree/master/images/aks-afd-verify-westus2-app-internal-kubectl.png)
 
 Now we need to deploy an instance of the Azure Firewall in each regions AKS VNet. To expose the internal AKS service to the internet we'll have to configure the NAT rule from the public IP of the Azure Firewall translating back to the AKS service internal IP. We will also need to create a Route Table for the AKS cluster subnet to have its default gateway pointed to the internal IP address of the Azure Firewall. This will ensure the symmetrical route is in place. 
 
