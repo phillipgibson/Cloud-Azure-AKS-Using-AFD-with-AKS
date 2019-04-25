@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-frontdoor-westus2-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azure-frontdoor-westus2-app
+  template:
+    metadata:
+      labels:
+        app: azure-frontdoor-westus2-app
+    spec:
+      containers:
+      - name: azure-frontdoor-westus2-app
+        image: phillipgibson/azure-frontdoor-westus2-app
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azure-frontdoor-westus2-app
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: azure-frontdoor-westus2-app
