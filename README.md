@@ -176,7 +176,7 @@ Now let's deploy a simple Node.js app to each cluster. Each app is personalized 
 For the Azure East US 2 deployment use the following:
 ```
 kubectl config use-context demo-afd-aks-eastus2-cluster
-kubectl create -f https://raw.githubusercontent.com/phillipgibson/Cloud/master/Azure/AKS/using-afd-with-aks/phillipgibson-azure-frontdoor-eastus2-elb-app.yaml
+kubectl create -f https://raw.githubusercontent.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/master/yaml/phillipgibson-azure-frontdoor-eastus2-elb-app.yaml
 ```
 Verify the deployed app has received a public IP and then browse to that endpoint.
 ```
@@ -189,7 +189,7 @@ kubectl get svc
 Repeat the same deployment for the West US 2 AKS cluster and verify you can browse to the endpoint.
 ```
 kubectl config use-context demo-afd-aks-westus2-cluster
-kubectl create -f https://raw.githubusercontent.com/phillipgibson/Cloud/master/Azure/AKS/using-afd-with-aks/phillipgibson-azure-frontdoor-westus2-elb-app.yaml
+kubectl create -f https://raw.githubusercontent.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/master/yaml/phillipgibson-azure-frontdoor-westus2-elb-app.yaml
 kubectl get svc
 ```
 ![alt text](https://github.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/blob/master/images/aks-afd-verify-westus2-app-kubectl.png)
@@ -277,10 +277,10 @@ If you're continuing from the previous deployment, let's go ahead and remove bot
 
 ```
 kubectl config use-context demo-afd-aks-eastus2-cluster
-kubectl delete -f https://raw.githubusercontent.com/phillipgibson/Cloud/master/Azure/AKS/using-afd-with-aks/phillipgibson-azure-frontdoor-eastus2-elb-app.yaml
+kubectl delete -f https://raw.githubusercontent.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/master/yaml/phillipgibson-azure-frontdoor-eastus2-elb-app.yaml
 kubectl get svc   # The demo service for the EastUS 2 region should now be deleted
 kubectl config use-context demo-afd-aks-westus2-cluster
-kubectl delete -f https://raw.githubusercontent.com/phillipgibson/Cloud/master/Azure/AKS/using-afd-with-aks/phillipgibson-azure-frontdoor-westus2-elb-app.yaml
+kubectl delete -f https://raw.githubusercontent.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/master/yaml/phillipgibson-azure-frontdoor-westus2-elb-app.yaml
 kubectl get svc   # The demo service for the WestUS 2 region should now be deleted
 ```
 I was attempting to use the Azure CLI to remove the AFD backend pool and routing rules and I received an error. I'm not sure if this is an issue with the preview CLI for AFD, so I went into the portal/UI and just deleted both of them keeping the AFD instance intact. I was attempting to use the following command.
@@ -303,7 +303,7 @@ az network front-door \
  For the Azure East US 2 deployment use the following:
 ```
 kubectl config use-context demo-afd-aks-eastus2-cluster
-kubectl create -f https://raw.githubusercontent.com/phillipgibson/Cloud/master/Azure/AKS/using-afd-with-aks/phillipgibson-azure-frontdoor-eastus2-ilb-app.yaml
+kubectl create -f https://raw.githubusercontent.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/master/yaml/phillipgibson-azure-frontdoor-eastus2-ilb-app.yaml
 ```
 
 Verify the deployed app has received a **internal** IP.
@@ -316,7 +316,7 @@ kubectl get svc
 Repeat the same deployment for the West US 2 AKS cluster and verify you have a **internal** IP as the endpoint.
 ```
 kubectl config use-context demo-afd-aks-westus2-cluster
-kubectl create -f https://raw.githubusercontent.com/phillipgibson/Cloud/master/Azure/AKS/using-afd-with-aks/phillipgibson-azure-frontdoor-westus2-ilb-app.yaml
+kubectl create -f https://raw.githubusercontent.com/phillipgibson/Cloud-Azure-AKS-Using-AFD-with-AKS/master/yaml/phillipgibson-azure-frontdoor-westus2-ilb-app.yaml
 kubectl get svc
 ```
 
